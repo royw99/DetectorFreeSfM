@@ -190,7 +190,7 @@ def eval_dataset(cfg):
                 output_path=output_path,
             )
 
-@hydra.main(config_path="hydra_configs/", config_name="base.yaml")
+@hydra.main(config_path='/kaggle/working/DetectorFreeSfM/hydra_configs/IMC/', config_name='dfsfm.yaml')
 def main(cfg: DictConfig):
     globals()[cfg.type](cfg)
 
