@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from einops.einops import rearrange
 from time import time
 
-from src.utils.profiler import PassThroughProfiler
+# from src.utils.profiler import PassThroughProfiler
 
 from .backbone import (
     build_backbone,
@@ -19,7 +19,7 @@ class MultiviewMatcher(nn.Module):
         super().__init__()
         # Misc
         self.config = config
-        self.profiler = profiler or PassThroughProfiler()
+        # self.profiler = profiler or PassThroughProfiler()
         self.debug = debug
         self.plotting_vis = plotting_vis
         self.test_speed = test_speed
@@ -134,7 +134,7 @@ class MultiviewMatcher(nn.Module):
 
             if self.training or not chunk_backbone_img:
                 assert isinstance(data["images"], torch.Tensor)
-                with self.profiler.record_function("MultiviewMatcher/fine-process"):
+                # with self.profiler.record_function("MultiviewMatcher/fine-process"):
                     image_patches, sparse = self.fine_preprocess(
                         data["images"],
                         all_sample_points,
@@ -150,7 +150,7 @@ class MultiviewMatcher(nn.Module):
                         )
 
                 # Extract features:
-                with self.profiler.record_function("MultiviewMatcher/backbone"):
+                # with self.profiler.record_function("MultiviewMatcher/backbone"):
                     # Images: B * N_img * 1 * H * W
                     features = self.backbone(
                         image_patches,
@@ -193,7 +193,7 @@ class MultiviewMatcher(nn.Module):
                         torch.cuda.synchronize()
                         crop_img_t0 = time()
 
-                    with self.profiler.record_function("MultiviewMatcher/fine-process"):
+                    # with self.profiler.record_function("MultiviewMatcher/fine-process"):
                         (
                             image_patches,
                             image_patch_belonging_mask,
@@ -225,7 +225,7 @@ class MultiviewMatcher(nn.Module):
                         crop_img_time += (feat_extract_t0 - crop_img_t0)
 
                     # Extract features:
-                    with self.profiler.record_function("MultiviewMatcher/backbone"):
+                    # with self.profiler.record_function("MultiviewMatcher/backbone"):
                         # Images: B * N_img * 1 * H * W
                         features = self.backbone(
                             image_patches,
@@ -316,7 +316,7 @@ class MultiviewMatcher(nn.Module):
                 ]
 
                 # Perform multiview transformer:
-                with self.profiler.record_function("MultiviewMatcher/transformer"):
+                # with self.profiler.record_function("MultiviewMatcher/transformer"):
                     if self.test_speed:
                         torch.cuda.synchronize()
                         transform_t0 = time()
@@ -344,7 +344,7 @@ class MultiviewMatcher(nn.Module):
                         transform_feat_time += (transform_t1 - transform_t0)
 
                 # Perform multiview refinement:
-                with self.profiler.record_function("MultiviewMatcher/matching"):
+                # with self.profiler.record_function("MultiviewMatcher/matching"):
                     if self.test_speed:
                         torch.cuda.synchronize()
                         matching_t0 = time()
